@@ -1,6 +1,7 @@
 package com.blautech.ecommerce.products.infrastructure.adapters.in.rest.dtos;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
@@ -19,8 +20,10 @@ public class CreateOneProductRequest {
     private String name;
     @Size(min = 1, max = 256)
     private String description;
+    @NotNull
     @Positive
     private Double price;
+    @NotNull
     @Positive
     private Integer quantity;
     @Size(min = 1, max = 256)
