@@ -22,7 +22,7 @@ public class CheckProductsExistByIdsRestController {
     public CheckProductsExistByIdsRestController(CheckProductsExistByIdsUseCase checkProductsExistByIdsUseCase) {
         this.checkProductsExistByIdsUseCase = checkProductsExistByIdsUseCase;
     }
-    @PostMapping("/ids")
+    @PostMapping(value = "/ids")
     public ResponseEntity<CheckResponse> checkProductsExistByIds(
         @RequestBody @Valid ProductIdsRequest productIdsRequest
     ) {
