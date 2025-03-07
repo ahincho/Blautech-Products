@@ -1,6 +1,7 @@
 package com.blautech.ecommerce.products.infrastructure.adapters.in.rest.controllers;
 
 import com.blautech.ecommerce.products.application.ports.in.FindProductsByIdsUseCase;
+import com.blautech.ecommerce.products.domain.exceptions.ProductNotFoundException;
 import com.blautech.ecommerce.products.domain.models.Product;
 import com.blautech.ecommerce.products.infrastructure.adapters.in.rest.dtos.ProductIdsRequest;
 import com.blautech.ecommerce.products.infrastructure.adapters.in.rest.dtos.ProductResponse;
@@ -26,13 +27,8 @@ public class FindProductsByIdsRestController {
     @GetMapping("/ids")
     public ResponseEntity<List<ProductResponse>> findProductsByIds(
         @ModelAttribute @Valid ProductIdsRequest productIdsRequest
-    ) {
-        List<Product> products = null;
-        try {
-            products = this.findProductsByIdsUseCase.execute(productIdsRequest.getIds());
-        } catch (com.blautech.ecommerce.products.domain.exceptions.ProductNotFoundException productNotFoundException) {
-            throw new RuntimeException(productNotFoundException);
-        }
+    ) throws ProductNotFoundException {
+        List<Product> products = this.findProductsByIdsUseCase.execute(productIdsRequest.getIds());
         return ResponseEntity.ok(ProductRestMapper.domainListToResponseList(products));
     }
 }
