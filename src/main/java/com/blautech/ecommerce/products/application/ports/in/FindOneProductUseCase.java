@@ -4,5 +4,5 @@ import com.blautech.ecommerce.products.domain.exceptions.ProductNotFoundExceptio
 import com.blautech.ecommerce.products.domain.models.Product;
 
 public interface FindOneProductUseCase {
-    Product execute(Integer productId) throws ProductNotFoundException;
+    Product execute(Long productId) throws ProductNotFoundException;
 }
