@@ -1,7 +1,16 @@
 package com.blautech.ecommerce.products.infrastructure.adapters.out.persistence.jpa.mappers;
 
+import com.blautech.ecommerce.products.domain.models.PaginationResult;
 import com.blautech.ecommerce.products.domain.models.Product;
+import com.blautech.ecommerce.products.domain.models.ProductFilters;
 import com.blautech.ecommerce.products.infrastructure.adapters.out.persistence.jpa.entities.ProductEntity;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import java.util.List;
 
 public class ProductJpaMapper {
     private ProductJpaMapper() {}
@@ -27,6 +36,27 @@ public class ProductJpaMapper {
             .image(productEntity.getImage())
             .createdAt(productEntity.getCreatedAt())
             .updatedAt(productEntity.getUpdatedAt())
+            .build();
+    }
+    public static Pageable domainPageToEntityPage(ProductFilters productFilters) {
+        return PageRequest.of(
+            productFilters.getPage().getNumber(),
+            productFilters.getPage().getSize(),
+            Sort.by(Sort.Direction.ASC, "id")
+        );
+    }
+    public static List<Product> entityListToDomainList(List<ProductEntity> productEntities) {
+        return productEntities.stream()
+            .map(ProductJpaMapper::entityToDomain)
+            .toList();
+    }
+    public static PaginationResult<Product> entityPaginationToDomainPagination(Page<ProductEntity> productEntityPage) {
+        return PaginationResult.<Product>builder()
+            .totalItems(productEntityPage.getTotalElements())
+            .totalPages(productEntityPage.getTotalPages())
+            .currentPage(productEntityPage.getNumber())
+            .pageSize(productEntityPage.getSize())
+            .items(entityListToDomainList(productEntityPage.getContent()))
             .build();
     }
 }

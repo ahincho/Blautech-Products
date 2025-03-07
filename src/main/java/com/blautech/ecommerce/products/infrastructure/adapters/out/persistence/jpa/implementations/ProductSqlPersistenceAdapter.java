@@ -8,6 +8,8 @@ import com.blautech.ecommerce.products.infrastructure.adapters.out.persistence.j
 import com.blautech.ecommerce.products.infrastructure.adapters.out.persistence.jpa.mappers.ProductJpaMapper;
 import com.blautech.ecommerce.products.infrastructure.adapters.out.persistence.jpa.repositories.ProductJpaRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,39 +26,46 @@ public class ProductSqlPersistenceAdapter implements ProductPersistencePort {
     @Transactional
     public Product createOneProduct(Product product) {
         ProductEntity productEntity = ProductJpaMapper.domainToEntity(product);
-        ProductEntity savedProductEntity = productJpaRepository.save(productEntity);
+        ProductEntity savedProductEntity = this.productJpaRepository.save(productEntity);
         return ProductJpaMapper.entityToDomain(savedProductEntity);
     }
     @Override
     public PaginationResult<Product> findProducts(ProductFilters productFilters) {
-        return null;
+        Pageable pageable = ProductJpaMapper.domainPageToEntityPage(productFilters);
+        Page<ProductEntity> productEntityPage = this.productJpaRepository.findAll(pageable);
+        return ProductJpaMapper.entityPaginationToDomainPagination(productEntityPage);
     }
     @Override
     public List<Product> findProductsByIds(List<Long> productIds) {
-        return List.of();
+        return this.productJpaRepository.findByIdIn(productIds)
+            .stream()
+            .map(ProductJpaMapper::entityToDomain)
+            .toList();
     }
     @Override
     public Optional<Product> findOneProductById(Long productId) {
-        return Optional.empty();
+        return this.productJpaRepository.findById(productId).map(ProductJpaMapper::entityToDomain);
     }
     @Override
     public boolean existsProductsByIds(List<Long> productIds) {
-        return false;
+        return this.productJpaRepository.countByIdIn(productIds) == productIds.size();
     }
     @Override
     public boolean existsOneProductById(Long productId) {
-        return false;
+        return this.productJpaRepository.existsById(productId);
     }
     @Override
     public boolean existsOneProductByName(String productName) {
         return this.productJpaRepository.existsByName(productName);
     }
     @Override
+    @Transactional
     public void updateOneProductById(Long productId, Product product) {
 
     }
     @Override
+    @Transactional
     public void deleteOneProductById(Long productId) {
-
+        this.productJpaRepository.deleteById(productId);
     }
 }
