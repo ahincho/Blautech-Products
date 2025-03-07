@@ -26,4 +26,7 @@ logging:
     com.zaxxer.hikari: WARN
     org.hibernate: INFO
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT:8081}
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
