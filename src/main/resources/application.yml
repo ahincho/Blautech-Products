@@ -1,5 +1,5 @@
 spring:
   application:
-    name: Products Microservice
+    name: products-microservice
   profiles:
     active: ${SPRING_PROFILE:dev}
