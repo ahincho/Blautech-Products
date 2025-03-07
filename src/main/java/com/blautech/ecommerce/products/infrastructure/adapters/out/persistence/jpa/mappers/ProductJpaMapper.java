@@ -56,6 +56,7 @@ public class ProductJpaMapper {
             .totalPages(productEntityPage.getTotalPages())
             .currentPage(productEntityPage.getNumber())
             .pageSize(productEntityPage.getSize())
+            .hasNextPage(productEntityPage.hasNext())
             .items(entityListToDomainList(productEntityPage.getContent()))
             .build();
     }
