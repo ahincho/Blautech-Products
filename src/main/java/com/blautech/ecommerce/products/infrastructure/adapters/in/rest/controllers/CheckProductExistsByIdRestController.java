@@ -4,7 +4,7 @@ import com.blautech.ecommerce.products.application.ports.in.CheckProductExistsBy
 import com.blautech.ecommerce.products.infrastructure.adapters.in.rest.dtos.CheckResponse;
 import com.blautech.ecommerce.products.infrastructure.adapters.in.rest.mappers.CommonRestMapper;
 
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +24,7 @@ public class CheckProductExistsByIdRestController {
     @GetMapping("/ids/{productId}")
     public ResponseEntity<CheckResponse> checkProductExistsById(
         @PathVariable
-        @Min(value = 1, message = "Product id must be greater than 0")
+        @PositiveOrZero(message = "Product id must be greater than 0")
         Long productId
     ) {
         Boolean existsById = this.checkProductExistsByIdUseCase.execute(productId);
