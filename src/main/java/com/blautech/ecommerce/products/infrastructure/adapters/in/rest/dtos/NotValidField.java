@@ -1,5 +1,7 @@
 package com.blautech.ecommerce.products.infrastructure.adapters.in.rest.dtos;
 
+import jakarta.validation.ConstraintViolation;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +19,13 @@ public class NotValidField {
     public NotValidField(FieldError fieldError) {
         this.field = fieldError.getField();
         this.message = fieldError.getDefaultMessage();
+    }
+    public NotValidField(ConstraintViolation<?> violation) {
+        this.field = extractFieldName(violation.getPropertyPath().toString());
+        this.message = violation.getMessage();
+    }
+    protected static String extractFieldName(String propertyPath) {
+        String[] parts = propertyPath.split("\\.");
+        return parts[parts.length - 1];
     }
 }

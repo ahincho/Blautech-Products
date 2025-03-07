@@ -5,6 +5,7 @@ import com.blautech.ecommerce.products.infrastructure.adapters.in.rest.dtos.NotV
 import com.blautech.ecommerce.products.infrastructure.adapters.in.rest.dtos.NotValidFieldsResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,23 @@ import java.util.List;
 
 @RestControllerAdvice
 public class ValidationRestAdvice {
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<NotValidFieldsResponse> constraintViolationException(
+        ConstraintViolationException constraintViolationException,
+        HttpServletRequest httpServletRequest
+    ) {
+        List<NotValidField> notValidFields = constraintViolationException.getConstraintViolations().stream()
+            .map(NotValidField::new)
+            .toList();
+        NotValidFieldsResponse notValidFieldsResponse = NotValidFieldsResponse.builder()
+            .path(httpServletRequest.getRequestURI())
+            .method(httpServletRequest.getMethod())
+            .statusCode(HttpStatus.BAD_REQUEST.value())
+            .statusDescription(HttpStatus.BAD_REQUEST.name())
+            .notValidFields(notValidFields)
+            .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(notValidFieldsResponse);
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<NotValidFieldsResponse> methodArgumentNotValidException(
         MethodArgumentNotValidException methodArgumentNotValidException,
