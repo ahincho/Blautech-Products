@@ -1,6 +1,7 @@
+-- V1 Create Products Table
 CREATE TABLE products (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(256) NOT NULL,
+    name VARCHAR(256) NOT NULL UNIQUE,
     description TEXT,
     price DECIMAL(10,2) NOT NULL CHECK (price >= 1.00) DEFAULT 1000.00,
     quantity INT NOT NULL CHECK (quantity >= 0) DEFAULT 0,
